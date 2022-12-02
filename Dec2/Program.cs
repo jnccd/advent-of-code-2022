@@ -1,22 +1,15 @@
-﻿var win = new string[]  { "A Y", "B Z", "C X" };
-var draw = new string[] { "A X", "B Y", "C Z" };
-var loss = new string[] { "A Z", "B X", "C Y" };
-var outcomes = new string[][] { loss, draw, win };
+﻿
+// Maps Input Piece and Game Outcome to the required Piece
+int[][] rpcMatrix = new int[][]{ 
+    new int[] { 2, 0, 1 },
+    new int[] { 0, 1, 2 },
+    new int[] { 1, 2, 0 }
+};
 
-var solution = File.ReadAllText("input.txt").Split("\n").Where(x => !string.IsNullOrWhiteSpace(x)).
-    Select(line =>
-    {
-        int hit = -1;
-        for (int i = 0; i < outcomes.Length; i++)
-            if (outcomes[i].Any(x => x == line))
-                hit = i;
-
-        if (hit == -1)
-            outcomes.GetHashCode();
-
-        int winscore = hit * 3;
-        int piecescore = line.Last() - 'X' + 1;
-        return winscore + piecescore;
-    }).Sum();
+var solution = File.ReadAllText("input.txt").Split("\n").SkipLast(1).
+    Select(line => 
+        (line.Last() - 'X') * 3 +                               // Winscore
+        rpcMatrix[line.First() - 'A'][line.Last() - 'X'] + 1).  // Piecescore
+    Sum();
 
 Console.WriteLine(solution);
